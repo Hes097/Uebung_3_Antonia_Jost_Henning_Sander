@@ -1,10 +1,3 @@
-<!--Noch zu bearbeiten
-    # Wetter-Icon ergänzen
-    # evtl. noch weitere Wettereigenschaften ergänzen
-    # Textblock mittig zentrieren
-    # Sortierung was in Head und was in Body gehört
--->
-
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
     <head>
@@ -33,6 +26,10 @@
                font-size: 1em;
            }
         </style>
+
+        <script src="openWeatherAPIkeys.js" charset="utf-8"></script>
+        <script src="WeatherJS.js" defer></script>
+
     </head>
 
     <body>       
@@ -43,77 +40,6 @@
             <p>No Weather Data</p>
         </div>
 
-        <script src="openWeatherAPIkeys.js" charset="utf-8"></script>
-        <script type="text/javascript">
-
-        ////////////////////// Location ////////////////////////////////////
-       document.querySelector('#findLocation').addEventListener('click', geoLookUp, false)
-     
-       function geoLookUp() {
-           const status = document.querySelector('#status')
-
-           function success(position) {
-               const latitude = position.coords.latitude
-               const longitude = position.coords.longitude
-               status.textContent = `lat: ${latitude}, lon: ${longitude}`
-               setWeather(latitude, longitude)
-           }
-
-           function error(err) {
-            status.textContent = 'Unable to retrieve your location. Error: ${err.code}. ${err.message}'
-           }
-
-           if (!navigator.geolocation) {
-               status.textContent = "Geolocation is not supported or allowed by your browser"
-           } else {
-               status.textContent = "Locating..."
-               navigator.geolocation.getCurrentPosition(success, error)
-           }
-       }
-       
-       
-       //////////////////////////// Weather //////////////////////////
-       
-       function setWeather(latitude, longitude) {
-
-        const p = document.querySelector('#weather p')
-
-        let openWeatherData = {}
-        let xhr = new XMLHttpRequest()
-        xhr.open('GET',`http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${openWeatherKey}&units=metric`)
-        xhr.responseType = 'text';
-
-        xhr.addEventListener('load', function(){
-            if (xhr.status === 200){
-                p.textContent = "loading..."
-                openWeatherData = JSON.parse(xhr.responseText)
-                populateWeatherInfo(openWeatherData, p)
-            } else {
-                p.textContent = "error: " + xhr.status
-            }
-        }, false)
-
-        xhr.send()
-       }
-       
-
-        function populateWeatherInfo (openWeatherData, p) {
-            //name, temp, windspeed, time
-            const location = openWeatherData.name
-            const temp = openWeatherData.main.temp
-            const feelsLike = openWeatherData.main.feels_like
-            const wind = Math.round(openWeatherData.wind.speed)
-            const time = new Date(openWeatherData.dt * 1000)        //transforming Date, als saved in Milliseconds
-            const hrs = time.getHours()
-            const mins = time.getMinutes()
-            // const icon = openWeatherData.weather.icon -> evtl. noch Wetter Icon (&API) ergänzen
-
-            const str = `${location}    ${temp}&#0176; feels like: ${feelsLike}&#0176;  <br>
-            Windspeed: ${wind}mph<br> Time: ${hrs}:${mins}`
-            p.innerHTML = str
-
-        }
-
-        </script>
+  
     </body>
 </html>
